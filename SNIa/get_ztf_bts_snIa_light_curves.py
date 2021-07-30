@@ -91,7 +91,7 @@ def main():
     lcs = get_light_curves(bts_table.index, lc_folder)
 
     selected_path, count = output_selected_objects(lcs, folder, bts_table,
-                                                   band='R', min_n_obs=10, min_obs_before_peak=3, min_obs_after_peak=4)
+                                                   band='g', min_n_obs=10, min_obs_before_peak=3, min_obs_after_peak=4)
     print(f'{count} ZTF IDs are written to {selected_path}')
 
 
