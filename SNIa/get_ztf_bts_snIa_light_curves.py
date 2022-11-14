@@ -14,6 +14,14 @@ except ImportError:
         yield from it
 
 
+COLUMN_NAME_MAPPER = {
+    'ant_mjd': 'time',
+    'ant_mag': 'mag',
+    'ant_magerr': 'magerr',
+    'ant_passband': 'band',
+}
+
+
 BTS_URL = 'https://sites.astro.caltech.edu/ztf/bts/explorer.php?f=s&subsample=snia&classstring=&classexclude=&quality=y&covok=y&visok=y&purity=y&snlc=y&ztflink=lasair&lastdet=&startsavedate=&startpeakdate=&startra=&startdec=&startz=&startdur=&startrise=&startfade=&startpeakmag=&startabsmag=&starthostabs=&starthostcol=&startb=&startav=&endsavedate=&endpeakdate=&endra=&enddec=&endz=&enddur=&endrise=&endfade=&endpeakmag=&endabsmag=&endhostabs=&endhostcol=&endb=&endav=&format=csv'
 
 
@@ -52,7 +60,9 @@ def get_light_curves(ids: Iterable[str], folder: Path) -> Dict[str, pd.DataFrame
             lc = download_light_curve(ztf_id)
             if lc is None or lc.size == 0:
                 continue
-            lc[['ant_mag', 'ant_mjd', 'ant_magerr', 'ant_passband', 'ant_survey']].to_csv(lc_path, index=False)
+            lc = lc[list(COLUMN_NAME_MAPPER)]
+            lc.rename(columns=COLUMN_NAME_MAPPER, inplace=True, errors='raise')
+            lc[list(COLUMN_NAME_MAPPER.values())].to_csv(lc_path, index=False)
         lcs[ztf_id] = lc
     return lcs
 
@@ -65,13 +75,13 @@ def output_selected_objects(lcs: Dict[str, pd.DataFrame], folder: Path, bts_tabl
     )
     with open(path, 'w') as fh:
         for ztf_id, lc in progress_bar(lcs.items()):
-            one_band = lc[lc['ant_passband'] == band]
+            one_band = lc[lc['band'] == band]
             if one_band.shape[0] < min_n_obs:
                 continue
             peak_mjd = 2458000 - 2400000.5 + bts_table.loc[ztf_id]['peakt']
-            if np.count_nonzero(one_band['ant_mjd'] < peak_mjd) < min_obs_before_peak:
+            if np.count_nonzero(one_band['time'] < peak_mjd) < min_obs_before_peak:
                 continue
-            if np.count_nonzero(one_band['ant_mjd'] > peak_mjd) < min_obs_after_peak:
+            if np.count_nonzero(one_band['time'] > peak_mjd) < min_obs_after_peak:
                 continue
             fh.write(f'{ztf_id}\n')
             count_outputs += 1
