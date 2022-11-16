@@ -9,9 +9,7 @@ def column_names(df: pd.DataFrame):
     columns = frozenset(df.columns)
     assert "time" in columns
     assert "band" in columns
-    assert columns.issuperset({"mag", "magerr"}) or columns.issuperset(
-        {"flux", "fluxerr"}
-    )
+    assert columns.issuperset({"mag", "magerr"}) or columns.issuperset({"flux", "fluxerr"})
 
 
 def validate(df: pd.DataFrame):

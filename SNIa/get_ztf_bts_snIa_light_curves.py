@@ -46,10 +46,7 @@ def download_light_curve(ztf_id: str) -> Optional[pd.DataFrame]:
 
     # Remove duplicate times
     passband_ids = lc["ant_passband"].map({"g": 1, "R": 2})
-    lc = lc[
-        (np.diff(lc["ant_mjd"], append=np.inf) != 0)
-        & (np.diff(passband_ids, append=-1) != 0)
-    ]
+    lc = lc[(np.diff(lc["ant_mjd"], append=np.inf) != 0) & (np.diff(passband_ids, append=-1) != 0)]
 
     return lc
 
