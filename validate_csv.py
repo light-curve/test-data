@@ -7,9 +7,11 @@ import pandas as pd
 
 def column_names(df: pd.DataFrame):
     columns = frozenset(df.columns)
-    assert 'time' in columns
-    assert 'band' in columns
-    assert columns.issuperset({'mag', 'magerr'}) or columns.issuperset({'flux', 'fluxerr'})
+    assert "time" in columns
+    assert "band" in columns
+    assert columns.issuperset({"mag", "magerr"}) or columns.issuperset(
+        {"flux", "fluxerr"}
+    )
 
 
 def validate(df: pd.DataFrame):
@@ -19,12 +21,12 @@ def validate(df: pd.DataFrame):
 def test_all_csv(subtests):
     project_dir = Path(__file__).parent
 
-    for folder in ['from-issues', 'SNIa/light-curves']:
+    for folder in ["from-issues", "SNIa/light-curves"]:
         base = project_dir / folder
-        for csv_path in base.glob('**/*.csv'):
+        for csv_path in base.glob("**/*.csv"):
             path = base / csv_path
             df = pd.read_csv(path)
-            with subtests.test('CSV validation test', path=path):
+            with subtests.test("CSV validation test", path=path):
                 validate(df)
 
 
@@ -38,5 +40,5 @@ def main():
     test_all_csv(MockPytestSubtests())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
