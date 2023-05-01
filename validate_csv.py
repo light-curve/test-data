@@ -19,7 +19,7 @@ def validate(df: pd.DataFrame):
 def test_all_csv(subtests):
     project_dir = Path(__file__).parent
 
-    for folder in ["from-issues", "SNIa/light-curves"]:
+    for folder in ["from-issues", "RRLyrae/light-curves", "SNIa/light-curves"]:
         base = project_dir / folder
         for csv_path in base.glob("**/*.csv"):
             path = base / csv_path

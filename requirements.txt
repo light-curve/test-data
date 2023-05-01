@@ -1,4 +1,7 @@
 antares-client
+astropy
+numpy
 pandas
 pytest
 pytest-subtests
+requests
